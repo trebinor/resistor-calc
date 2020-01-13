@@ -158,7 +158,10 @@ impl RSeries {
                         .cartesian_product(POWERS.iter())
                         .map(|(val, pow)| val * pow),
                 )
-                .unique_by(|v| (*v * 100.0) as u64)
+                .sorted_by(|a, b| a.partial_cmp(b).expect("No NaNs"))
+                .iter()
+                .dedup()
+                .cloned()
                 .collect::<Vec<f64>>()
                 .into_boxed_slice(),
         }
