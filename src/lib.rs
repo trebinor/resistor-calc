@@ -256,7 +256,6 @@ impl RRes {
     /// Print 15 combinations that produce the lowest error values.
     // TODO Allow specifying error limit instead of just top 15 results
     pub fn print_best(&self) {
-        let best_err = self.res[0].0;
         for (idx, res) in self
             .res
             .iter()

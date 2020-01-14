@@ -9,7 +9,7 @@ lazy_static!(
 );
 
 enum Bounds {
-    Cmp(Box<Fn(f64, f64) -> bool>, meval::Expr, f64),
+    Cmp(Box<dyn Fn(f64, f64) -> bool>, meval::Expr, f64),
     Err(meval::Expr, f64),
 }
 
@@ -83,7 +83,7 @@ impl ROpBuilder {
         self
     }
 
-    fn cmp_bound_fn(&mut self) -> Box<Fn(&meval::Context) -> Option<f64>> {
+    fn cmp_bound_fn(&mut self) -> Box<dyn Fn(&meval::Context) -> Option<f64>> {
         match self.ops.pop() {
             Some(b) => match b {
                 Bounds::Cmp(op, expr, target) => {
