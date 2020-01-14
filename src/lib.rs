@@ -52,6 +52,7 @@
 extern crate itertools;
 #[macro_use]
 extern crate lazy_static;
+extern crate signifix;
 
 use itertools::Itertools;
 
@@ -62,6 +63,9 @@ mod expr_builder;
 
 #[cfg(feature = "expr_builder")]
 pub use expr_builder::ROpBuilder;
+
+use std::convert::TryFrom;
+use signifix::metric;
 
 const POWERS: &[f64] = &[1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6];
 
@@ -187,13 +191,7 @@ fn _format_rval(r: f64, unit: &str) -> String {
 }
 
 fn _print_r(r: &f64) -> String {
-    if *r < 1000.0 {
-        _format_rval(*r, "R")
-    } else if *r < 1_000_000.0 {
-        _format_rval(*r / 1000.0, "K")
-    } else {
-        _format_rval(*r / 1_000_000.0, "M")
-    }
+    format!("{}Ω", metric::Signifix::try_from(*r).unwrap())
 }
 
 fn _print_res(r: &(u64, RSet)) {
