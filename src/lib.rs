@@ -52,6 +52,7 @@
 extern crate itertools;
 #[macro_use]
 extern crate lazy_static;
+extern crate signifix;
 
 use itertools::Itertools;
 
@@ -62,6 +63,9 @@ mod expr_builder;
 
 #[cfg(feature = "expr_builder")]
 pub use expr_builder::ROpBuilder;
+
+use std::convert::TryFrom;
+use signifix::metric;
 
 const POWERS: &[f64] = &[1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6];
 
@@ -188,18 +192,12 @@ fn _format_rval(r: f64, unit: &str) -> String {
 }
 
 fn _print_r(r: &f64) -> String {
-    if *r < 1000.0 {
-        _format_rval(*r, "R")
-    } else if *r < 1_000_000.0 {
-        _format_rval(*r / 1000.0, "K")
-    } else {
-        _format_rval(*r / 1_000_000.0, "M")
-    }
+    format!("{}Ω", metric::Signifix::try_from(*r).unwrap())
 }
 
 fn _print_res(r: &(u64, RSet)) {
     let &(r, ref v) = r;
-    println!("Error: {:.3}\nValues: {}", (r as f64) / 1e9, v);
+    println!("Error: {:.5}\nValues: {}", (r as f64) / 1e9, v);
 }
 
 /// A binding of values to the set of resistors in a calculation.
@@ -255,13 +253,14 @@ pub struct RRes {
 }
 
 impl RRes {
-    /// Print all combinations that share the lowest error value.
+    /// Print 15 combinations that produce the lowest error values.
+    // TODO Allow specifying error limit instead of just top 15 results
     pub fn print_best(&self) {
         let best_err = self.res[0].0;
         for (idx, res) in self
             .res
             .iter()
-            .take_while(|(err, _)| *err == best_err)
+            .take(15)
             .enumerate()
         {
             println!("Match {}:", idx + 1);

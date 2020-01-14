@@ -16,3 +16,4 @@ expr_builder = ["meval"]
 itertools = "0.7.*"
 lazy_static = "1.0.*"
 meval = { version = "0.1.0", optional = true }
+signifix = "0.10"
