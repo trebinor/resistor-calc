@@ -122,12 +122,6 @@ lazy_static! {
     ]);
 }
 
-pub(crate) fn _test_calc() -> RRes {
-    let r = RCalc::e3(2);
-    r.calc(ROpBuilder::new().bound("R1 + R2 ~ 500").finish())
-        .unwrap()
-}
-
 /// A series of resistor values, constants are provided for standard resistor array values.
 #[derive(Debug)]
 pub struct RSeries {
